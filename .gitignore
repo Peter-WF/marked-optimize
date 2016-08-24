@@ -1,0 +1,29 @@
+# ignore dependencies
+/node_modules
+/bower_components
+
+/npm-debug.log
+
+*.db
+*.bak
+*.tmp
+*.cmd
+~*
+
+# Mac crap
+.DS_Store
+
+# WebStorm
+.idea/**/*
+.idea/**
+
+
+# generator
+/generators/app/templates/node_modules
+coverage
+
+# 单元测试 demo
+/test/output/**/*
+/test/output/**
+
+/dev-test

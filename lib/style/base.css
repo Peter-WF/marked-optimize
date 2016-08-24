@@ -1,0 +1,29 @@
+body {
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #34495e;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    position: relative;
+}
+
+h1:before,
+h2:before,
+h3:before,
+h4:before,
+h5:before {
+    content: "#";
+    color: #42b983;
+    position: absolute;
+    left: -0.9em;
+    top: -2px;
+    font-size: 1.2em;
+    font-weight: bold;
+}

@@ -1,0 +1,31 @@
+{
+  "name": "marked-optimize",
+  "version": "0.0.1",
+  "description": "优化 marked",
+  "author": {
+    "name": "王斐",
+    "email": "wangfeia@zbj.com",
+    "url": ""
+  },
+  "main": "index.js",
+  "keywords": [
+    "Markdown2HTML",
+    "marked with anchors"
+  ],
+  "dependencies": {
+    "ejs": "^2.5.1",
+    "highlight.js": "^9.6.0",
+    "marked": "^0.3.6",
+    "nunjucks": "^2.4.2",
+    "object-assign": "^4.1.0",
+    "striptags": "^2.1.1",
+    "util": "^0.10.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Peter-WF/marked-optimize.git"
+  },
+  "scripts": {
+  },
+  "license": "MIT"
+}
