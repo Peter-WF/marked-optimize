@@ -1,0 +1,1009 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../lib/style/markdown-css-themes/markdown10.css">
+    <link rel="stylesheet" href="../lib/style/highlight-theme/monokai-sublime.css"/>
+    <link rel="stylesheet" href="../lib/style/base.css">
+    <title>Document</title>
+</head>
+<body>
+<!-- toc -->
+<a href="#BaseUploader 基础上传组件" class="headerlink" title="BaseUploader 基础上传组件"><h1 id="BaseUploader 基础上传组件">BaseUploader 基础上传组件</h1></a><ul>
+<li><p><strong>作者：</strong> 基础技术 - 陈曦</p>
+</li>
+<li><p><strong>全站覆盖：</strong> <code>是</code></p>
+</li>
+<li><p><strong>描述：</strong> 上传组件基类，包含了上传所需的基本逻辑。</p>
+</li>
+<li><p><strong>源码位置：</strong> <code>fis-common/widget/ui/components/uploader-qiniu/baseUploader.js</code></p>
+</li>
+<li><p><strong>资源ID：</strong> <code>common:components/uploader-qiniu/baseUploader</code></p>
+</li>
+</ul>
+<ul>
+<li><strong>引用方式：</strong> <code>require(&quot;common:components/uploader-qiniu/baseUploader&quot;)</code></li>
+</ul>
+<ul>
+<li><p><strong>内部依赖：</strong> <a href="https://github.com/moxiecode/plupload">plupload</a> - <a href="http://www.uedsc.com/plupload-doc.html">中文文档</a></p>
+</li>
+<li><p><strong>继承：</strong></p>
+<pre><code>├─ Base（mix：Events、Aspect、Attribute）
+<span class="hljs-string">|</span>
+├─ Widget
+<span class="hljs-string">|</span>
+└─ BaseUploader
+</code></pre></li>
+</ul>
+<a href="#调用方式" class="headerlink" title="调用方式"><h2 id="调用方式">调用方式</h2></a><hr>
+<p><a href="http://jsfiddle.net/gebilaoxiong/5couuzoz/23/">BaseUploader (基本示例)</a></p>
+<p><em>（请确保在查看示例时本地环境配置了rake-zbj项目）</em></p>
+<a href="#初始化选项" class="headerlink" title="初始化选项"><h2 id="初始化选项">初始化选项</h2></a><hr>
+<a href="#element" class="headerlink" title="element"><h3 id="element">element</h3></a><ul>
+<li><p><strong>必选：</strong> <code>是</code></p>
+</li>
+<li><p><strong>继承：</strong> Widget (arale)</p>
+</li>
+<li><p><strong>说明：</strong> 与Widget关联的DOM元素</p>
+</li>
+<li><p><strong>备注：</strong> 该选项和 template 为二选一。在没有配置 element 时，阿拉蕾会将 template 选项解析为 element 。</p>
+</li>
+</ul>
+<a href="#browse_button" class="headerlink" title="browse_button"><h3 id="browse_button">browse_button</h3></a><ul>
+<li><p><strong>必选：</strong> <code>是</code></p>
+</li>
+<li><p><strong>说明：</strong> 触发文件选择对话框的DOM元素，当点击该元素后便会弹出文件选择对话框。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Element|jQuery obj|ID</code></p>
+</li>
+</ul>
+<a href="#acceptExt" class="headerlink" title="acceptExt"><h3 id="acceptExt">acceptExt</h3></a><ul>
+<li><p><strong>默认值：</strong> 默认包含全部类型, 详见备注</p>
+</li>
+<li><p><strong>说明：</strong> 用来限定上传文件的类型，该数组的每个元素为一个对象，该对象有title和extensions两个属性，title为该过滤器的名称，extensions为允许上传文件的扩展名，有多个时使用用逗号隔开。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Object Array</code></p>
+</li>
+<li><p><strong>备注：</strong></p>
+</li>
+</ul>
+<pre><code>    <span class="hljs-comment">// 现目前支持的所有类型</span>
+    [
+        { <span class="hljs-string">title :</span> <span class="hljs-string">"Image files"</span>, <span class="hljs-string">extensions :</span> <span class="hljs-string">"jpg,gif,png,bmp,jpeg,tif,eps"</span> },
+        { <span class="hljs-string">title :</span> <span class="hljs-string">"Zip files"</span>, <span class="hljs-string">extensions :</span> <span class="hljs-string">"zip,rar,7z"</span> },
+        { <span class="hljs-string">title :</span> <span class="hljs-string">"Document files"</span>, <span class="hljs-string">extensions:</span> <span class="hljs-string">"pdf,ppt,pptx,doc,docx,xls,xlsx,page,txt,mht,numbers"</span> },
+        { <span class="hljs-string">title :</span> <span class="hljs-string">"Media files"</span>, <span class="hljs-string">extensions:</span> <span class="hljs-string">"swf,fla,mp3,mp4,m4a,wma,mpg"</span>},
+        { <span class="hljs-string">title :</span> <span class="hljs-string">"Project files"</span>, <span class="hljs-string">extensions :</span> <span class="hljs-string">"dwg,psd,max,ezp,ai,cdr,indd,obj"</span> },
+        { <span class="hljs-string">title :</span> <span class="hljs-string">"Other files"</span>,  <span class="hljs-string">extensions:</span> <span class="hljs-string">"ttc,ttf,otf,key,abr,eip"</span> }
+    ]
+</code></pre><a href="#max_file_size" class="headerlink" title="max_file_size"><h3 id="max_file_size">max_file_size</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>&#39;10mb&#39;</code></p>
+</li>
+<li><p><strong>说明：</strong> 用来限定上传文件的大小。值可以为一个数字，单位为b，也可以是一个字符串，由数字和单位组成，如’200kb’。</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code></p>
+</li>
+</ul>
+<a href="#prevent_duplicates" class="headerlink" title="prevent_duplicates"><h3 id="prevent_duplicates">prevent_duplicates</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>true</code></p>
+</li>
+<li><p><strong>说明：</strong> 是否允许选取重复的文件，true表示不允许，false表示允许，默认为false。如果两个文件的文件名和大小都相同，则会被认为是重复的文件。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Boolean</code></p>
+</li>
+</ul>
+<a href="#count_limit" class="headerlink" title="count_limit"><h3 id="count_limit">count_limit</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>5</code></p>
+</li>
+<li><p><strong>说明：</strong> 限定上传文件的个数。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Number</code></p>
+</li>
+</ul>
+<a href="#belongToDomain☆" class="headerlink" title="belongToDomain☆"><h3 id="belongToDomain☆">belongToDomain☆</h3></a><ul>
+<li><p><strong>必选：</strong> <code>是</code></p>
+</li>
+<li><p><strong>说明：</strong> 资源所属域（请求token时所需参数）</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code></p>
+</li>
+<li><p><strong>备注：</strong> 改选项为必须参数，请参考 <a href="baseUpload.md#附表1-《系统名称及所属域对照表》"><em>附表1</em></a> 做相应配置。</p>
+</li>
+</ul>
+<a href="#belongToSystem☆" class="headerlink" title="belongToSystem☆"><h3 id="belongToSystem☆">belongToSystem☆</h3></a><ul>
+<li><p><strong>必选：</strong> <code>是</code></p>
+</li>
+<li><p><strong>说明：</strong> 资源所属系统（通过请求token时所需参数）</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code></p>
+</li>
+<li><p><strong>备注：</strong> 该选项为必须参数，请参考 <a href="baseUpload.md#附表1-《系统名称及所属域对照表》"><em>附表1</em></a> 做相应配置。</p>
+</li>
+</ul>
+<a href="#tokenUrl☆" class="headerlink" title="tokenUrl☆"><h3 id="tokenUrl☆">tokenUrl☆</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>http://192.168.143.0:8087/rms/resource</code></p>
+</li>
+<li><p><strong>说明：</strong> 资源管理器接口，用于在文件上传时获取文件的相关信息（存储位置、授权token、预处理类型等）。</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code></p>
+</li>
+<li><p><strong>备注：</strong> 请将此参数设置为 <code>window.ZBJInfo.qiniuUploadTokenUrl+&#39;/resource/&#39;</code>。</p>
+</li>
+</ul>
+<a href="#runtimes" class="headerlink" title="runtimes"><h3 id="runtimes">runtimes</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>&#39;html5,flash,html4&#39;</code> </p>
+</li>
+<li><p><strong>说明：</strong> 用来指定上传方式，指定多个上传方式请使用逗号隔开。上传插件会根据该配置的优先级选择最优的上传方式。</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code></p>
+</li>
+</ul>
+<a href="#drop_element" class="headerlink" title="drop_element"><h3 id="drop_element">drop_element</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>null</code></p>
+</li>
+<li><p><strong>说明：</strong> 指定了使用拖拽方式来选择上传文件时的拖拽区域，即可以把文件拖拽到这个区域的方式来选择文件。该参数的值可以为一个DOM元素的id,也可是 DOM元素本身，还可以是一个包括多个DOM元素的数组。如果不设置该参数则拖拽上传功能不可用。目前只有html5上传方式才支持拖拽上传。</p>
+</li>
+<li><p><strong>类型：</strong> <code>DOM | String | Array</code></p>
+</li>
+</ul>
+<a href="#multi_selection" class="headerlink" title="multi_selection"><h3 id="multi_selection">multi_selection</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>true</code></p>
+</li>
+<li><p><strong>说明：</strong> 是否可以在文件浏览对话框中选择多个文件，true为可以，false为不可以。默认true，即可以选择多个文件。需要注意的是，在某些不支持 多选文件的环境中，默认值是false。比如在ios7的safari浏览器中，由于存在bug，造成不能多选文件。当然，在html4上传方式中，也是无法多选文件的。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Boolean</code></p>
+</li>
+</ul>
+<a href="#watermark_type" class="headerlink" title="watermark_type"><h3 id="watermark_type">watermark_type</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>空字符串</code></p>
+</li>
+<li><p><strong>说明：</strong> 水印的类型，目前仅支持’imagewatermark’，如果使用默认值或者设置为空则不添加水印。</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code></p>
+</li>
+<li><p><strong>枚举值：</strong> <code>&#39;imagewatermark&#39;</code></p>
+</li>
+</ul>
+<a href="#watermark_img" class="headerlink" title="watermark_img"><h3 id="watermark_img">watermark_img</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>空字符串</code></p>
+</li>
+<li><p><strong>说明：</strong> 需要添加到文件中的水印图片地址，可先将水印图片上传至 <a href="http://files.dev.zbjdev.com/login.php">八戒云</a>。</p>
+</li>
+<li><p><strong>类型：</strong>    <code>String</code></p>
+</li>
+</ul>
+<a href="#max_retries" class="headerlink" title="max_retries"><h3 id="max_retries">max_retries</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>1</code></p>
+</li>
+<li><p><strong>说明：</strong> 当发生plupload.HTTP_ERROR错误时的重试次数，为0时表示不重试。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Number</code></p>
+</li>
+</ul>
+<a href="#chunk_size" class="headerlink" title="chunk_size"><h3 id="chunk_size">chunk_size</h3></a><ul>
+<li><p><strong>默认值：</strong> <code>&#39;4mb&#39;</code></p>
+</li>
+<li><p><strong>说明：</strong> 分片上传文件时，每片文件被切割成的大小，为数字时单位为字节。也可以使用一个带单位的字符串，如”200kb”。当该值为0时表示不使用分片上传功能。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Number | String</code> </p>
+</li>
+</ul>
+<a href="#url" class="headerlink" title="url"><h3 id="url">url</h3></a><ul>
+<li><p><strong>说明：</strong> 服务器端接收和处理上传文件的脚本地址，可以是相对路径(相对于当前调用Plupload的页面)</p>
+</li>
+<li><p><strong>类型：</strong> <code>String</code> </p>
+</li>
+<li><p><strong>备注：</strong> 该配置已经在代码中对https和http做了兼容处理，在初始化阶段会被<strong>重置</strong>为默认值, 修改无效。</p>
+</li>
+<li><p><strong>默认值：</strong></p>
+<pre><code>  <span class="hljs-keyword">https</span>页面：<span class="hljs-string">'https://up.qbox.me'</span>
+  <span class="hljs-keyword">http</span>页面： <span class="hljs-string">'http://upload.qiniu.com'</span>
+</code></pre></li>
+</ul>
+<a href="#onAdd(plupload,filterFiles)" class="headerlink" title="onAdd(plupload,filterFiles)"><h3 id="onAdd(plupload,filterFiles)">onAdd(plupload,filterFiles)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 当文件<code>添加到上传队列</code>后触发。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><p><strong>plupload</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><p><strong>filterFiles</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为本次添加到上传队列里的文件对象</code></li>
+<li><strong>类型：</strong> <code>Array</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#onProgress(plupload,file)" class="headerlink" title="onProgress(plupload,file)"><h3 id="onProgress(plupload,file)">onProgress(plupload,file)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 会在文件上传过程中不断触发，可以用此事件来显示上传进度监听函数参数。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><p><strong>plupload</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><p><strong>file</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>触发此事件的文件对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#onUploaded(plupload,file,info)" class="headerlink" title="onUploaded(plupload,file,info)"><h3 id="onUploaded(plupload,file,info)">onUploaded(plupload,file,info)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 当队列中的某一个文件上传完成后触发监听函数参数。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><p><strong>plupload</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><p><strong>file</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>触发此事件的文件对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>id</strong><ul>
+<li><strong>说明：</strong> 文件的唯一键值</li>
+</ul>
+</li>
+<li><strong>name</strong><ul>
+<li><strong>说明：</strong> 文件名</li>
+</ul>
+</li>
+<li><strong>type</strong><ul>
+<li><strong>说明：</strong> 文件类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>info</strong><ul>
+<li><strong>说明：</strong> <code>为文件资源信息</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>filename</strong><ul>
+<li><strong>说明：</strong> 文件名称</li>
+</ul>
+</li>
+<li><strong>filesize</strong><ul>
+<li><strong>说明：</strong> 文件大小</li>
+</ul>
+</li>
+<li><strong>filext</strong><ul>
+<li><strong>说明：</strong> 文件后缀</li>
+</ul>
+</li>
+<li><strong>hash</strong><ul>
+<li><strong>说明：</strong> 哈希</li>
+</ul>
+</li>
+<li><strong>mimetype</strong><ul>
+<li><strong>说明：</strong> 媒体类型</li>
+</ul>
+</li>
+<li><strong>ofilename</strong><ul>
+<li><strong>说明：</strong> 文件名称</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#onComplete(plupload)" class="headerlink" title="onComplete(plupload)"><h3 id="onComplete(plupload)">onComplete(plupload)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 当上传队列中所有文件都上传完成后触发监听函数参数。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>plupload</strong><ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#onQueuechanged(plupload)" class="headerlink" title="onQueuechanged(plupload)"><h3 id="onQueuechanged(plupload)">onQueuechanged(plupload)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 当上传队列发生变化后触发，即上传队列新增了文件或移除了文件。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>plupload</strong><ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>备注：</strong> 该事件会比onAdd或onRemoved事件先触发监听函数参数</p>
+</li>
+</ul>
+<a href="#onRemove(file)" class="headerlink" title="onRemove(file)"><h3 id="onRemove(file)">onRemove(file)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 当点击了文件项上的删除按钮时触发。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>file</strong><ul>
+<li><strong>说明：</strong> <code>触发此事件的文件对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>id</strong><ul>
+<li><strong>说明：</strong> 文件的唯一键值</li>
+</ul>
+</li>
+<li><strong>name</strong><ul>
+<li><strong>说明：</strong> 文件名</li>
+</ul>
+</li>
+<li><strong>type</strong><ul>
+<li><strong>说明：</strong> 文件类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>备注：</strong> 该按钮元素DOM结构需要带有事件委托属性：<code>action-type=&quot;delete&quot;</code> 及 文件ID属性：<code>data-pid=&quot;fileId&quot;</code>。</p>
+</li>
+</ul>
+<a href="#onError(plupload,error)" class="headerlink" title="onError(plupload,error)"><h3 id="onError(plupload,error)">onError(plupload,error)</h3></a><ul>
+<li><p><strong>默认值：</strong> $.noop</p>
+</li>
+<li><p><strong>描述：</strong> 当发生错误时触发。</p>
+</li>
+<li><p><strong>类型：</strong> <code>Function</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>plupload</strong><ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><strong>error</strong><ul>
+<li><strong>说明：</strong> <code>为错误对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>code</strong><ul>
+<li><strong>说明：</strong> 错误代码</li>
+</ul>
+</li>
+<li><strong>file</strong><ul>
+<li><strong>说明：</strong> 与错误相关的文件对象</li>
+</ul>
+</li>
+<li><strong>message</strong><ul>
+<li><strong>说明：</strong> 错误信息</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#实例方法" class="headerlink" title="实例方法"><h2 id="实例方法">实例方法</h2></a><hr>
+<a href="#uploader.isBusy()" class="headerlink" title="uploader.isBusy()"><h3 id="uploader.isBusy()">uploader.isBusy()</h3></a><ul>
+<li><p><strong>描述：</strong> 用于判断上传队列中是否还有待上传的文件。</p>
+</li>
+<li><p><strong>参数：</strong> <code>无</code></p>
+</li>
+<li><p><strong>返回值：</strong> <code>true</code> 表示队列中存在待上传的文件，<code>false</code> 表示没有。</p>
+</li>
+</ul>
+<a href="#uploader.getUrl(key)" class="headerlink" title="uploader.getUrl(key)"><h3 id="uploader.getUrl(key)">uploader.getUrl(key)</h3></a><ul>
+<li><p><strong>描述：</strong> 获取文件下载、预览的地址。</p>
+</li>
+<li><p><strong>参数：</strong> </p>
+<ul>
+<li><strong>key</strong><ul>
+<li><strong>必须：</strong> <code>是</code></li>
+<li><strong>说明：</strong> 为文件资源信息的键值</li>
+<li><strong>类型：</strong> <code>String</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>返回值：</strong></p>
+<ul>
+<li><strong>说明：</strong> 包含下载地址和预览地址的新对象</li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>属性：</strong><ul>
+<li><strong>downloadUrl</strong><ul>
+<li><strong>说明</strong> 下载地址</li>
+</ul>
+</li>
+<li><strong>previewUrl</strong><ul>
+<li><strong>说明</strong> 预览地址</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>示例：</strong></p>
+</li>
+</ul>
+<pre><code class="hljs lang-js">    <span class="hljs-comment">// 获取上传文件的下载路径</span>
+    <span class="hljs-selector-tag">uploader</span><span class="hljs-selector-class">.on</span>(<span class="hljs-string">'uploaded'</span>, function ( plupload, file, info ) {
+
+      var urls = uploader<span class="hljs-selector-class">.getUrl</span>(info.filename);
+
+      console<span class="hljs-selector-class">.log</span>(urls.downloadUrl);
+
+      <span class="hljs-comment">// ...</span>
+    });
+</code></pre>
+<ul>
+<li><strong>注意：</strong> 文件的key值为info的filename属性，可以通过 <code>getFileData( fileId )</code> 方法获取fileInfo。</li>
+</ul>
+<a href="#uploader.isImage(key)" class="headerlink" title="uploader.isImage(key)"><h3 id="uploader.isImage(key)">uploader.isImage(key)</h3></a><ul>
+<li><p><strong>描述：</strong> 判断已上传的文件是否为图片</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>key</strong><ul>
+<li><strong>说明：</strong> 为文件资源信息的键值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>返回值：</strong></p>
+<ul>
+<li><strong>类型：</strong><code>Boolean</code></li>
+<li><strong>描述：</strong><code>true</code>:是图片；<code>false</code>:不是图片</li>
+</ul>
+</li>
+</ul>
+<a href="#uploader.getFileData(fileId)" class="headerlink" title="uploader.getFileData(fileId)"><h3 id="uploader.getFileData(fileId)">uploader.getFileData(fileId)</h3></a><ul>
+<li><p><strong>描述：</strong> 通过文件的ID获取资源信息</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>fileId</strong><ul>
+<li><strong>必须：</strong> <code>是</code></li>
+<li><strong>说明</strong> 为文件的键值</li>
+<li><strong>类型：</strong> <code>String</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>返回值：</strong></p>
+<ul>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>描述：</strong> 文件对象，内部封装文件相关数据</li>
+</ul>
+</li>
+<li><p><strong>示例：</strong></p>
+<pre><code class="hljs lang-js">  <span class="hljs-comment">// 获取上传文件的key值</span>
+  <span class="hljs-selector-tag">uploader</span><span class="hljs-selector-class">.on</span>(<span class="hljs-string">'uploaded'</span>, function ( plupload, file ) {
+
+    var fileInfo = uploader<span class="hljs-selector-class">.getFileData</span>(file.id);
+
+    console<span class="hljs-selector-class">.log</span>(fileInfo.filename);
+
+    <span class="hljs-comment">// ...</span>
+  });
+</code></pre>
+<a href="#uploader.on(event,callback,[context])" class="headerlink" title="uploader.on(event,callback,[context])"><h3 id="uploader.on(event,callback,[context])">uploader.on(event,callback,[context])</h3></a></li>
+<li><p><strong>描述：</strong> 给对象添加事件回调函数</p>
+</li>
+<li><p><strong>继承：</strong> <code>Event (arale)</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>event</strong><ul>
+<li><strong>说明</strong> 事件名</li>
+</ul>
+</li>
+<li><strong>callback</strong><ul>
+<li><strong>说明</strong> 事件回调函数</li>
+</ul>
+</li>
+<li><strong>context</strong><ul>
+<li><strong>说明</strong> 事件上下文</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>备注：</strong> 可以传入第三个参数 context 来改变回调函数调用时的 this 值</p>
+</li>
+<li><p><strong>示例：</strong></p>
+<pre><code class="hljs lang-js">  uploader<span class="hljs-selector-class">.on</span>(<span class="hljs-string">'add'</span>, callback, context <span class="hljs-comment">/*可选*/</span>);
+</code></pre>
+<a href="#uploader.off([event],[callback],[context])" class="headerlink" title="uploader.off([event],[callback],[context])"><h3 id="uploader.off([event],[callback],[context])">uploader.off([event],[callback],[context])</h3></a></li>
+<li><p><strong>描述：</strong> 从对象上移除事件回调函数</p>
+</li>
+<li><p><strong>继承：</strong> <code>Event (arale)</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>event</strong><ul>
+<li><strong>说明</strong> 事件名</li>
+</ul>
+</li>
+<li><strong>callback</strong><ul>
+<li><strong>说明</strong> 事件回调函数</li>
+</ul>
+</li>
+<li><strong>context</strong><ul>
+<li><strong>说明</strong> 事件上下文</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>备注：</strong> 三个参数都是可选的，当省略某个参数时，表示取该参数的所有值。</p>
+</li>
+<li><p><strong>示例：</strong></p>
+<pre><code class="hljs lang-js">
+  <span class="hljs-comment">// 移除 add 事件上名为 onAdd 的回调函数</span>
+  uploader<span class="hljs-selector-class">.off</span>(<span class="hljs-string">'add'</span>, onAdd);
+
+  <span class="hljs-comment">// 移除 add 事件的所有回调函数</span>
+  uploader<span class="hljs-selector-class">.off</span>(<span class="hljs-string">'add'</span>);
+
+  <span class="hljs-comment">// 移除所有事件上名为 onAdd 的回调函数</span>
+  uploader<span class="hljs-selector-class">.off</span>(null, onAdd);
+
+  <span class="hljs-comment">// 移除上下文为 context 的所有事件的所有回调函数</span>
+  uploader<span class="hljs-selector-class">.off</span>(null, null, context);
+
+  <span class="hljs-comment">// 移除 uploader 对象上所有事件的所有回调函数</span>
+  uploader<span class="hljs-selector-class">.off</span>();
+</code></pre>
+</li>
+</ul>
+<a href="#uploader.trigger(event,[*args])" class="headerlink" title="uploader.trigger(event,[*args])"><h3 id="uploader.trigger(event,[*args])">uploader.trigger(event,[*args])</h3></a><ul>
+<li><p><strong>描述：</strong> 触发一个或多个事件（用空格分隔）</p>
+</li>
+<li><p><strong>继承：</strong> <code>Event (arale)</code></p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>event</strong><ul>
+<li><strong>说明</strong> 事件名</li>
+</ul>
+</li>
+<li><strong>args</strong><ul>
+<li><strong>说明</strong> 参数会依次传给回调函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#实例属性" class="headerlink" title="实例属性"><h2 id="实例属性">实例属性</h2></a><a href="#tokenObj" class="headerlink" title="tokenObj"><h3 id="tokenObj">tokenObj</h3></a><ul>
+<li><p><strong>说明：</strong> 存放所有文件的token</p>
+</li>
+<li><p><strong>类型：</strong> <strong>Object Array</strong></p>
+</li>
+<li><p><strong>对象格式如：</strong></p>
+<pre><code class="hljs lang-json">  {
+      <span class="hljs-attr">"文件名称"</span>:
+      [
+          <span class="hljs-string">"文件 token"</span>,
+          <span class="hljs-string">"文件 key"</span>
+      ]
+  }
+</code></pre>
+<a href="#事件" class="headerlink" title="事件"><h2 id="事件">事件</h2></a></li>
+</ul>
+<hr>
+<a href="#add" class="headerlink" title="add"><h3 id="add">add</h3></a><ul>
+<li><p><strong>描述：</strong> 当文件<code>添加到上传队列</code>后触发。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><p><strong>plupload</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><p><strong>filterFiles</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为本次添加到上传队列里的文件对象</code></li>
+<li><strong>类型：</strong> <code>Array</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#progress" class="headerlink" title="progress"><h3 id="progress">progress</h3></a><ul>
+<li><p><strong>描述：</strong> 会在文件上传过程中不断触发，可以用此事件来显示上传进度监听函数参数。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><p><strong>plupload</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><p><strong>file</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>触发此事件的文件对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#uploaded" class="headerlink" title="uploaded"><h3 id="uploaded">uploaded</h3></a><ul>
+<li><p><strong>描述：</strong> 当队列中的某一个文件上传完成后触发监听函数参数。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><p><strong>plupload</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><p><strong>file</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>触发此事件的文件对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>id</strong><ul>
+<li><strong>说明：</strong> 文件的唯一键值</li>
+</ul>
+</li>
+<li><strong>name</strong><ul>
+<li><strong>说明：</strong> 文件名</li>
+</ul>
+</li>
+<li><strong>type</strong><ul>
+<li><strong>说明：</strong> 文件类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>info</strong></p>
+<ul>
+<li><strong>说明：</strong> <code>为文件资源信息</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>filename</strong><ul>
+<li><strong>说明：</strong> 文件名称</li>
+</ul>
+</li>
+<li><strong>filesize</strong><ul>
+<li><strong>说明：</strong> 文件大小</li>
+</ul>
+</li>
+<li><strong>filext</strong><ul>
+<li><strong>说明：</strong> 文件后缀</li>
+</ul>
+</li>
+<li><strong>hash</strong><ul>
+<li><strong>说明：</strong> 哈希</li>
+</ul>
+</li>
+<li><strong>mimetype</strong><ul>
+<li><strong>说明：</strong> 媒体类型</li>
+</ul>
+</li>
+<li><strong>ofilename</strong><ul>
+<li><strong>说明：</strong> 文件名称</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#complete" class="headerlink" title="complete"><h3 id="complete">complete</h3></a><ul>
+<li><p><strong>描述：</strong> 当上传队列中所有文件都上传完成后触发监听函数参数。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>plupload</strong><ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#queuechanged" class="headerlink" title="queuechanged"><h3 id="queuechanged">queuechanged</h3></a><ul>
+<li><p><strong>描述：</strong> 当上传队列发生变化后触发，即上传队列新增了文件或移除了文件。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>plupload</strong><ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>备注：</strong> 该事件会比onAdd或onRemoved事件先触发监听函数参数</p>
+</li>
+</ul>
+<a href="#remove" class="headerlink" title="remove"><h3 id="remove">remove</h3></a><ul>
+<li><p><strong>描述：</strong> 当点击了文件项上的删除按钮时触发。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>file</strong><ul>
+<li><strong>说明：</strong> <code>触发此事件的文件对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>id</strong><ul>
+<li><strong>说明：</strong> 文件的唯一键值</li>
+</ul>
+</li>
+<li><strong>name</strong><ul>
+<li><strong>说明：</strong> 文件名</li>
+</ul>
+</li>
+<li><strong>type</strong><ul>
+<li><strong>说明：</strong> 文件类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>备注：</strong> 该按钮元素DOM结构需要带有事件委托属性：<code>action-type=&quot;delete&quot;</code> 及 文件ID属性：<code>data-pid=&quot;fileId&quot;</code>。</p>
+</li>
+</ul>
+<a href="#error" class="headerlink" title="error"><h3 id="error">error</h3></a><ul>
+<li><p><strong>描述：</strong> 当发生错误时触发。</p>
+</li>
+<li><p><strong>参数：</strong></p>
+<ul>
+<li><strong>plupload</strong><ul>
+<li><strong>说明：</strong> <code>为 plupload 实例对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+</ul>
+</li>
+<li><strong>error</strong><ul>
+<li><strong>说明：</strong> <code>为错误对象</code></li>
+<li><strong>类型：</strong> <code>Object</code></li>
+<li><strong>备注：</strong></li>
+<li><strong>属性：</strong><ul>
+<li><strong>code</strong><ul>
+<li><strong>说明：</strong> 错误代码</li>
+</ul>
+</li>
+<li><strong>file</strong><ul>
+<li><strong>说明：</strong> 与错误相关的文件对象</li>
+</ul>
+</li>
+<li><strong>message</strong><ul>
+<li><strong>说明：</strong> 错误信息</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a href="#图片参数" class="headerlink" title="图片参数"><h2 id="图片参数">图片参数</h2></a><p><a href="http://jsfiddle.net/gebilaoxiong/5ytvrwdq/2/">BaseUploader (图片上传预览示例)</a> <em>（请确保在查看示例时本地环境配置了rake-zbj项目）</em></p>
+<a href="#略缩图参数列表" class="headerlink" title="略缩图参数列表"><h3 id="略缩图参数列表">略缩图参数列表</h3></a><ul>
+<li><p><code>s.m</code>  略缩图模式，默认为1 <a href="http://developer.qiniu.com/docs/v6/api/reference/fop/image/imageview2.html">参考链接</a>。</p>
+</li>
+<li><p><code>s.w</code>  略缩图宽度</p>
+</li>
+<li><p><code>s.h</code>  略缩图高度</p>
+</li>
+<li><p><code>s.format</code>  新图输出格式，如jpg，png等</p>
+</li>
+<li><p><code>s.interlace</code>  是否支持渐进显示, 取值范围：1 支持渐进显示，0不支持渐进显示(缺省为0) 适用目标格式：jpg</p>
+</li>
+<li><p><code>s.quality</code>  图片质量，取值范围是[1, 100]。默认85</p>
+</li>
+</ul>
+<a href="#示例" class="headerlink" title="示例"><h4 id="示例">示例</h4></a><pre><code>  // 获取300X200略缩图:
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;s.w=<span class="hljs-number">300</span>&amp;s.h=<span class="hljs-number">200</span>
+</code></pre><a href="#图片处理参数列表" class="headerlink" title="图片处理参数列表"><h3 id="图片处理参数列表">图片处理参数列表</h3></a><ul>
+<li><p><code>a.t</code>  图片缩放参数 <a href="http://developer.qiniu.com/docs/v6/api/reference/fop/image/imagemogr2.html#imagemogr2-anchor-spec">参考链接</a>。</p>
+</li>
+<li><p><code>a.g</code>  图片裁剪位置</p>
+</li>
+<li><p><code>a.c</code>  图片裁剪参数(a.g+a.c)</p>
+</li>
+<li><p><code>a.r</code>  图片旋转参数</p>
+</li>
+<li><p><code>a.b</code>  图片高斯模糊参数</p>
+</li>
+<li><p><code>a.format</code>  新图输出格式，如jpg，png等</p>
+</li>
+<li><p><code>a.interlace</code>  是否支持渐进显示, 取值范围：1 支持渐进显示，0不支持渐进显示(缺省为0) 适用目标格式：jpg</p>
+</li>
+<li><p><code>a.quality</code>   图片质量，取值范围是[1, 100]。默认85</p>
+</li>
+</ul>
+<a href="#示例-1" class="headerlink" title="示例"><h4 id="示例-1">示例</h4></a><pre><code>  // 图片缩放<span class="hljs-number">50</span><span class="hljs-symbol">%</span>
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;a.t=!50p
+
+  // 图片裁剪（居中300x200）
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;a.c=300x200&amp;a.g=Center
+
+  // 图片旋转(顺时针旋转<span class="hljs-number">30</span>°)
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;a.r=<span class="hljs-number">30</span>
+
+  // 图片高斯模糊(模糊半径x正态分布标准差)
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;a.b=3x5
+</code></pre><a href="#水印参数列表" class="headerlink" title="水印参数列表"><h3 id="水印参数列表">水印参数列表</h3></a><ul>
+<li><p><code>w.t</code> 水印类型，1.图片水印，2.文字水印， 3，图片+文字水印</p>
+</li>
+<li><p><code>w.i</code> 图片水印时，水印图片（注意水印图片不能大于原图尺寸）</p>
+</li>
+<li><p><code>w.ig</code> 图片水印位置</p>
+</li>
+<li><p><code>w.id</code> 图片水印透明度</p>
+</li>
+<li><p><code>w.ix</code> 图片水印相当于w.ig之后的x轴偏移</p>
+</li>
+<li><p><code>w.iy</code> 图片水印相当于w.ig之后的y轴偏移</p>
+</li>
+<li><p><code>w.text</code> 文字水印内容</p>
+</li>
+<li><p><code>w.font</code> 文字水印字体</p>
+</li>
+<li><p><code>w.fonts</code> 文字水印大小</p>
+</li>
+<li><p><code>w.fill</code> 文字水印颜色</p>
+</li>
+<li><p><code>w.tg</code> 文字水印位置</p>
+</li>
+<li><p><code>w.td</code> 文字水印透明度</p>
+</li>
+<li><p><code>w.tx</code> 文字水印相当于w.tg之后的x轴偏移</p>
+</li>
+<li><p><code>w.ty</code> 文字水印相当于w.tg之后的y轴偏移</p>
+</li>
+</ul>
+<a href="#示例-2" class="headerlink" title="示例"><h4 id="示例-2">示例</h4></a><pre><code>  // 图片水印（水印图片地址http://77flds.com2.z0.glb.qiniucdn.com/images/logo-<span class="hljs-number">2.</span>png）
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;w.t=<span class="hljs-number">1</span>&amp;w.i=http://77flds.com2.z0.glb.qiniucdn.com/images/logo-<span class="hljs-number">2.</span>png
+
+  // 文字水印（居中文字水印）
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;w.t=<span class="hljs-number">2</span>&amp;w.text=文字水印&amp;w.tg=Center
+
+  // 图片+文字水印
+  http://<span class="hljs-number">192.168</span>.143.0:<span class="hljs-number">8087</span>/resource/redirect?<span class="hljs-built_in">key</span>=homesite%2Ftask%2Flogo-small.png%2Forigine%2Fe668cf75-<span class="hljs-number">13b9</span>-<span class="hljs-number">4321</span>-b6d3-20e71fb2bd4b&amp;w.t=<span class="hljs-number">3</span>&amp;w.text=文字水印&amp;w.tg=Center&amp;w.i=http://77flds.com2.z0.glb.qiniucdn.com/images/logo-<span class="hljs-number">2.</span>png
+</code></pre><a href="#注意" class="headerlink" title="注意"><h3 id="注意">注意</h3></a><blockquote>
+<p>以上所有处理参数可同时指定，同时指定多种参数后，数据处理顺序为，先做略缩处理，将略缩后的结果给高级处理，将高级处理结果给水印处理，返回最终结果，类似管道。</p>
+</blockquote>
+<a href="#示例-3" class="headerlink" title="示例"><h4 id="示例-3">示例</h4></a><p>先将原图略缩为300X200的略缩图，然后缩放大略缩图为200%(600x400)， 然后居中裁剪300x200，然后旋转30°，然后输出为png格式图片，接着做图片+文字水印，图片水印放右上角，文字水印放右下角</p>
+<pre><code>http:<span class="hljs-regexp">//localhost</span>:<span class="hljs-number">8080</span>/resource/getDownloadParam?key=<span class="hljs-number">6630632359095907249</span>.jpg&amp;s.w=<span class="hljs-number">300</span>&amp;s.h=<span class="hljs-number">200</span>&amp;a.t=!<span class="hljs-number">200</span>p&amp;a.g=Center&amp;a.c=<span class="hljs-number">300</span>x20<span class="hljs-number">0</span>&amp;a.r=<span class="hljs-number">30</span>&amp;a.format=png&amp;w.t=<span class="hljs-number">3</span>&amp;w.i=http:<span class="hljs-regexp">//</span><span class="hljs-number">77</span>flds.com2.z<span class="hljs-number">0</span>.glb.qiniucdn.com/images/logo-<span class="hljs-number">2</span>.png&amp;w.ig=NorthEast&amp;w.text=%E6%96%87%E5%AD%97%E6%B0%B4%E5%8D%B0&amp;w.tg=SouthEast
+</code></pre><a href="#附表1 《系统名称及所属域对照表》" class="headerlink" title="附表1 《系统名称及所属域对照表》"><h2 id="附表1 《系统名称及所属域对照表》">附表1 《系统名称及所属域对照表》</h2></a><table>
+<thead>
+<tr>
+<th>业务系统名</th>
+<th style="text-align:center">资源所属域(belongToDomain)</th>
+<th style="text-align:center">资源所属系统(belongToSystem)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>抢单宝（服务商App）</td>
+<td style="text-align:center">mobile</td>
+<td style="text-align:center">wikey</td>
+</tr>
+<tr>
+<td>猪八戒（卖家版App）</td>
+<td style="text-align:center">mobile</td>
+<td style="text-align:center">buyer</td>
+</tr>
+<tr>
+<td>触屏版</td>
+<td style="text-align:center">mobile</td>
+<td style="text-align:center">newwap</td>
+</tr>
+<tr>
+<td>移动产品其他系统</td>
+<td style="text-align:center">mobile</td>
+<td style="text-align:center">default</td>
+</tr>
+<tr>
+<td>主站历史资源</td>
+<td style="text-align:center">homesite</td>
+<td style="text-align:center">old</td>
+</tr>
+<tr>
+<td>主站(发布需求)</td>
+<td style="text-align:center">homesite</td>
+<td style="text-align:center">task</td>
+</tr>
+<tr>
+<td>八戒图片广告系统</td>
+<td style="text-align:center">homesite</td>
+<td style="text-align:center">res</td>
+</tr>
+<tr>
+<td>八戒财税</td>
+<td style="text-align:center">caishui</td>
+<td style="text-align:center">caishui</td>
+</tr>
+<tr>
+<td>八卦炉</td>
+<td style="text-align:center">bgl</td>
+<td style="text-align:center">bjclound</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
